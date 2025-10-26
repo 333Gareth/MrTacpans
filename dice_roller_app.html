@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dice Roller</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom Keyframes for a simple rolling animation */
         @keyframes roll {
@@ -17,6 +16,15 @@
         /* Class to apply the animation */
         .rolling {
             animation: roll 0.5s ease-out 3; /* Runs 3 times */
+        }
+
+        /* Body background with the provided image */
+        body {
+            background-image: url('https://i.imgur.com/your-image-id-here.png'); /* Replace with actual image URL if you host it */
+            background-size: cover; /* Cover the entire background */
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            background-attachment: fixed; /* Keep background fixed when scrolling, if content was longer */
         }
     </style>
     <script>
@@ -31,13 +39,12 @@
         }
     </script>
 </head>
-<body class="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4 font-sans">
+<body class="min-h-screen flex flex-col items-center justify-center p-4 font-sans">
 
-    <div class="max-w-md w-full bg-gray-800 p-8 rounded-xl shadow-2xl text-center">
+    <div class="max-w-md w-full bg-gray-800 bg-opacity-90 p-8 rounded-xl shadow-2xl text-center">
         <h1 class="text-3xl font-bold text-white mb-6">🎲 Dice Roller App 🎲</h1>
 
-        <!-- Dice Display Area -->
-        <div id="dice-container" 
+        <!-- Dice Display Area --><div id="dice-container" 
              class="dice-display w-32 h-32 mx-auto mb-8 
                     flex items-center justify-center text-7xl font-extrabold 
                     bg-white text-gray-900 border-4 border-yellow-500 
@@ -47,13 +54,11 @@
             1
         </div>
 
-        <!-- Result Text -->
-        <p id="result-text" class="text-xl text-yellow-300 font-semibold mb-8">
+        <!-- Result Text --><p id="result-text" class="text-xl text-yellow-300 font-semibold mb-8">
             Click the button to roll!
         </p>
 
-        <!-- Roll Button -->
-        <button id="roll-button" 
+        <!-- Roll Button --><button id="roll-button" 
                 class="w-full py-3 px-6 
                        bg-yellow-600 hover:bg-yellow-500 
                        text-gray-900 font-bold text-lg 
@@ -62,8 +67,7 @@
             Roll the Dice!
         </button>
         
-        <!-- API Call Simulation placeholder for complexity -->
-        <div id="loading-indicator" class="hidden mt-4 text-sm text-yellow-400">Rolling...</div>
+        <!-- API Call Simulation placeholder for complexity --><div id="loading-indicator" class="hidden mt-4 text-sm text-yellow-400">Rolling...</div>
     </div>
 
     <script>
