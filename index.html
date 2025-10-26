@@ -159,6 +159,17 @@
             5: 'show-5',
             6: 'show-6',
         };
+        
+        // Custom information for each dice result
+        const factMap = {
+            1: "You rolled a One (⚀)! One is the most common result when rolling a single die, statistically speaking, as it has the same probability as any other number.",
+            2: "You rolled a Two (⚁)! Two is the smallest prime number and the only even prime number.",
+            3: "You rolled a Three (⚂)! Three is known as the perfect number in numerology, representing harmony and wisdom.",
+            4: "You rolled a Four (⚃)! Four is the smallest composite number, and the number of sides on a tetrahedron (a four-sided die).",
+            5: "You rolled a Five (⚄)! Five is a Fibonacci number, and the average number of teeth on a star-fish!",
+            6: "You rolled a Six (⚅)! Six is the highest number on a standard die, and the first perfect number (a number equal to the sum of its proper positive divisors).",
+        };
+
 
         /**
          * Cleans up existing rotation classes on the cube.
@@ -201,7 +212,8 @@
                 // 5. Update text and state after the snap/tumble is complete
                 // Wait for the short SNAP_DURATION to ensure the final face is visible
                 setTimeout(() => {
-                    resultText.textContent = `You rolled a: ${finalResult}!`;
+                    const fact = factMap[finalResult] || `You rolled a: ${finalResult}!`;
+                    resultText.textContent = fact;
                     rollButton.disabled = false;
                     loadingIndicator.classList.add('hidden');
                 }, SNAP_DURATION); 
