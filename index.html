@@ -18,7 +18,8 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth transition for final result */
+            /* Shorter transition for the final snap from tumble to result */
+            transition: transform 0.5s ease-out; 
         }
 
         .dice-face {
@@ -38,7 +39,7 @@
         }
 
         /* ------------------
-           FACE POSITIONS
+           FACE POSITIONS (The orientation of each face relative to the center)
         --------------------*/
         .face-1 { transform: rotateY(0deg) translateZ(50px); }
         .face-6 { transform: rotateY(180deg) translateZ(50px); }
@@ -48,7 +49,7 @@
         .face-4 { transform: rotateY(90deg) translateZ(50px); }
         
         /* ------------------
-           FINAL ROTATIONS (MAPPING result to 3D orientation)
+           FINAL ROTATIONS (The rotation required to show a specific face on top)
         --------------------*/
         .show-1 { transform: translateZ(-50px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
         .show-6 { transform: translateZ(-50px) rotateX(0deg) rotateY(180deg) rotateZ(0deg); }
@@ -63,15 +64,14 @@
         @keyframes tumble {
             0% { transform: translateZ(-50px) rotateX(0deg) rotateY(0deg); }
             100% { 
-                /* Tumbling effect: multiple random rotations */
-                transform: translateZ(-50px) rotateX(720deg) rotateY(720deg) rotateZ(360deg); 
+                /* Increased Tumbling effect: multiple random rotations for visual complexity */
+                transform: translateZ(-50px) rotateX(1080deg) rotateY(1080deg) rotateZ(360deg); 
             }
         }
 
         .rolling .dice-cube {
-            /* Apply the tumble animation */
-            animation: tumble 1.5s linear forwards; 
-            /* After animation, we transition to the 'show-X' class */
+            /* Apply the tumble animation, 2 seconds duration */
+            animation: tumble 2s linear forwards; 
         }
 
         /* Body background with the provided image */
@@ -147,7 +147,8 @@
         
         // Define number of sides for the dice
         const NUM_SIDES = 6;
-        const TUMBLE_DURATION = 1500; // Must match CSS animation duration (1.5s)
+        const TUMBLE_DURATION = 2000; // Must match CSS animation duration (2.0s)
+        const SNAP_DURATION = 500;    // Must match CSS transition duration (0.5s)
 
         // Mapping from result number to the required CSS class for final rotation
         const rotationClasses = {
@@ -190,18 +191,21 @@
             
             setTimeout(() => {
                 // 3. Stop the tumble animation
-                diceCube.classList.remove('rolling');
+                // This removes the animation property, allowing CSS transition to take over
+                diceCube.classList.remove('rolling'); 
                 
-                // 4. Apply the final rotation class based on the result
-                // This uses CSS transition for a smooth "landing" effect
+                // 4. Apply the final rotation class
                 const finalRotationClass = rotationClasses[finalResult];
                 diceCube.classList.add(finalRotationClass);
                 
-                // 5. Update text and state after the tumble is visually complete
-                resultText.textContent = `You rolled a: ${finalResult}!`;
-                rollButton.disabled = false;
-                loadingIndicator.classList.add('hidden');
-                
+                // 5. Update text and state after the snap/tumble is complete
+                // Wait for the short SNAP_DURATION to ensure the final face is visible
+                setTimeout(() => {
+                    resultText.textContent = `You rolled a: ${finalResult}!`;
+                    rollButton.disabled = false;
+                    loadingIndicator.classList.add('hidden');
+                }, SNAP_DURATION); 
+
             }, TUMBLE_DURATION);
         }
 
@@ -218,4 +222,3 @@
     </script>
 </body>
 </html>
-
