@@ -6,42 +6,81 @@
     <title>Mr Tacpans Game Of Games</title>
     <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom Keyframes for a 3D tumbling roll effect */
-        @keyframes roll {
-            /* Start state */
-            0% { 
-                transform: rotate3d(0, 0, 0, 0deg) scale(1); 
-                opacity: 1; 
-            }
-            /* Mid-roll: Aggressive tumble on multiple axes */
-            50% { 
-                /* Rotate around a custom axis (1, 1, 0) by 540 degrees */
-                transform: rotate3d(1, 1, 0, 540deg) scale(0.95); 
-                opacity: 0.7; /* Slight fade for motion blur effect */
-            }
-            /* End state */
+        /* Base styles for the 3D cube setup */
+        .dice-container {
+            width: 100px;
+            height: 100px;
+            perspective: 500px; /* How strong the 3D effect appears */
+        }
+        
+        .dice-cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth transition for final result */
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 4px solid #f59e0b; /* yellow-500 border */
+            background-color: white;
+            color: #111827; /* gray-900 text */
+            font-size: 5rem; /* Large font size for pips */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            line-height: 1; /* Center the unicode character vertically */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        /* ------------------
+           FACE POSITIONS
+        --------------------*/
+        .face-1 { transform: rotateY(0deg) translateZ(50px); }
+        .face-6 { transform: rotateY(180deg) translateZ(50px); }
+        .face-2 { transform: rotateX(90deg) translateZ(50px); }
+        .face-5 { transform: rotateX(-90deg) translateZ(50px); }
+        .face-3 { transform: rotateY(-90deg) translateZ(50px); }
+        .face-4 { transform: rotateY(90deg) translateZ(50px); }
+        
+        /* ------------------
+           FINAL ROTATIONS (MAPPING result to 3D orientation)
+        --------------------*/
+        .show-1 { transform: translateZ(-50px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+        .show-6 { transform: translateZ(-50px) rotateX(0deg) rotateY(180deg) rotateZ(0deg); }
+        .show-2 { transform: translateZ(-50px) rotateX(-90deg) rotateY(0deg) rotateZ(0deg); }
+        .show-5 { transform: translateZ(-50px) rotateX(90deg) rotateY(0deg) rotateZ(0deg); }
+        .show-3 { transform: translateZ(-50px) rotateX(0deg) rotateY(90deg) rotateZ(0deg); }
+        .show-4 { transform: translateZ(-50px) rotateX(0deg) rotateY(-90deg) rotateZ(0deg); }
+        
+        /* ------------------
+           ANIMATION (Rolling Tumble)
+        --------------------*/
+        @keyframes tumble {
+            0% { transform: translateZ(-50px) rotateX(0deg) rotateY(0deg); }
             100% { 
-                /* Final rotation of 1080 degrees (3 full tumbles) */
-                transform: rotate3d(1, 1, 1, 1080deg) scale(1); 
-                opacity: 1; 
+                /* Tumbling effect: multiple random rotations */
+                transform: translateZ(-50px) rotateX(720deg) rotateY(720deg) rotateZ(360deg); 
             }
         }
 
-        /* Class to apply the animation */
-        .rolling {
-            /* Runs once over 2 seconds for a distinct visual roll */
-            animation: roll 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
+        .rolling .dice-cube {
+            /* Apply the tumble animation */
+            animation: tumble 1.5s linear forwards; 
+            /* After animation, we transition to the 'show-X' class */
         }
 
         /* Body background with the provided image */
         body {
-            /* Changed the commit hash to 'main' for a more stable public link */
             background-image: url('https://raw.githubusercontent.com/333Gareth/MrTacpans/main/Tacpans_myan.png') !important; 
-            background-size: cover !important; /* Cover the entire background */
-            background-position: center !important; /* Center the image */
-            background-repeat: no-repeat !important; /* Do not repeat the image */
-            background-attachment: fixed !important; /* Keep background fixed when scrolling, if content was longer */
-            /* Add a dark fallback color in case the image still fails */
+            background-size: cover !important; 
+            background-position: center !important; 
+            background-repeat: no-repeat !important; 
+            background-attachment: fixed !important; 
             background-color: #1f2937 !important; 
         }
     </style>
@@ -60,18 +99,27 @@
 <body class="min-h-screen flex flex-col items-center justify-center p-4 font-sans">
 
     <div class="max-w-md w-full bg-gray-800 bg-opacity-90 p-8 rounded-xl shadow-2xl text-center">
-        <!-- CORRECTED HEADING -->
         <h1 class="text-3xl font-bold text-white mb-6">🎲 Mr Tacpans Game Of Games 🎲</h1>
 
-        <!-- Dice Display Area --><div id="dice-container" 
-             class="dice-display w-32 h-32 mx-auto mb-8 
-                    flex items-center justify-center text-7xl font-extrabold 
-                    bg-white text-gray-900 border-4 border-yellow-500 
-                    rounded-2xl shadow-inner cursor-pointer select-none
-                    transition-all duration-300 transform hover:scale-105"
-             data-result="1">
-            1
+        <!-- 3D Dice Container -->
+        <div id="dice-wrapper" class="dice-container mx-auto mb-8 flex items-center justify-center">
+            <div id="dice-container" class="dice-cube">
+                <!-- Face 1 -->
+                <div class="dice-face face-1" data-result="1">⚀</div>
+                <!-- Face 2 -->
+                <div class="dice-face face-2" data-result="2">⚁</div>
+                <!-- Face 3 -->
+                <div class="dice-face face-3" data-result="3">⚂</div>
+                <!-- Face 4 -->
+                <div class="dice-face face-4" data-result="4">⚃</div>
+                <!-- Face 5 -->
+                <div class="dice-face face-5" data-result="5">⚄</div>
+                <!-- Face 6 -->
+                <div class="dice-face face-6" data-result="6">⚅</div>
+            </div>
         </div>
+        <!-- End 3D Dice Container -->
+
 
         <!-- Result Text --><p id="result-text" class="text-xl text-yellow-300 font-semibold mb-8">
             Click the button to roll!
@@ -86,64 +134,88 @@
             Roll the Dice!
         </button>
         
-        <!-- API Call Simulation placeholder for complexity --><div id="loading-indicator" class="hidden mt-4 text-sm text-yellow-400">Rolling...</div>
+        <div id="loading-indicator" class="hidden mt-4 text-sm text-yellow-400">Rolling...</div>
     </div>
 
     <script>
         // DOM Elements
-        const diceContainer = document.getElementById('dice-container');
+        const diceWrapper = document.getElementById('dice-wrapper');
+        const diceCube = document.getElementById('dice-container');
         const rollButton = document.getElementById('roll-button');
         const resultText = document.getElementById('result-text');
         const loadingIndicator = document.getElementById('loading-indicator');
         
         // Define number of sides for the dice
         const NUM_SIDES = 6;
+        const TUMBLE_DURATION = 1500; // Must match CSS animation duration (1.5s)
+
+        // Mapping from result number to the required CSS class for final rotation
+        const rotationClasses = {
+            1: 'show-1',
+            2: 'show-2',
+            3: 'show-3',
+            4: 'show-4',
+            5: 'show-5',
+            6: 'show-6',
+        };
+
+        /**
+         * Cleans up existing rotation classes on the cube.
+         */
+        function resetCubeRotation() {
+            Object.values(rotationClasses).forEach(cls => {
+                diceCube.classList.remove(cls);
+            });
+        }
 
         /**
          * Simulates a dice roll, updates the UI, and applies a visual effect.
          */
         function rollDice() {
+            // Check if a roll is already in progress
+            if (rollButton.disabled) return;
+
             // Disable button and show loading for effect
             rollButton.disabled = true;
             loadingIndicator.classList.remove('hidden');
+            resultText.textContent = "Rolling...";
 
             // 1. Generate a random result
-            const result = Math.floor(Math.random() * NUM_SIDES) + 1;
-
-            // 2. Apply rolling animation
-            diceContainer.classList.add('rolling');
+            const finalResult = Math.floor(Math.random() * NUM_SIDES) + 1;
             
-            // 3. Wait for the animation to finish before showing the final result
-            // The animation duration now matches the CSS (2000ms)
-            const animationDuration = 2000; // 2.0 seconds
-
+            // 2. Prepare the cube for rolling
+            resetCubeRotation();
+            diceCube.classList.add('rolling'); // Start tumble animation
+            
+            
             setTimeout(() => {
-                // Remove animation class
-                diceContainer.classList.remove('rolling');
+                // 3. Stop the tumble animation
+                diceCube.classList.remove('rolling');
                 
-                // Update the display with the final result
-                diceContainer.textContent = result;
-                diceContainer.dataset.result = result; // Store result in data attribute
-
-                // Update text
-                resultText.textContent = `You rolled a: ${result}!`;
-
-                // Re-enable button and hide loading
+                // 4. Apply the final rotation class based on the result
+                // This uses CSS transition for a smooth "landing" effect
+                const finalRotationClass = rotationClasses[finalResult];
+                diceCube.classList.add(finalRotationClass);
+                
+                // 5. Update text and state after the tumble is visually complete
+                resultText.textContent = `You rolled a: ${finalResult}!`;
                 rollButton.disabled = false;
                 loadingIndicator.classList.add('hidden');
                 
-            }, animationDuration);
+            }, TUMBLE_DURATION);
         }
 
         // --- Event Listeners ---
         rollButton.addEventListener('click', rollDice);
-        diceContainer.addEventListener('click', rollDice);
+        diceWrapper.addEventListener('click', rollDice); // Clicking the dice area also rolls it
 
         // Initial state update
         document.addEventListener('DOMContentLoaded', () => {
-             // You can optionally add a small message or instruction here
+             // Set a default rotation to '1' on load
+             diceCube.classList.add('show-1'); 
         });
 
     </script>
 </body>
 </html>
+
