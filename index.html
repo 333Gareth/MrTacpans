@@ -20,11 +20,14 @@
 
         /* Body background with the provided image */
         body {
-            background-image: url('https://raw.githubusercontent.com/333Gareth/MrTacpans/f1e24fc5b2fe422e066c989ec2d8e5158fb416ef/Tacpans_myan.png'); /* Corrected URL for raw image content */
-            background-size: cover; /* Cover the entire background */
-            background-position: center; /* Center the image */
-            background-repeat: no-repeat; /* Do not repeat the image */
-            background-attachment: fixed; /* Keep background fixed when scrolling, if content was longer */
+            /* Changed the commit hash to 'main' for a more stable public link */
+            background-image: url('https://raw.githubusercontent.com/333Gareth/MrTacpans/main/Tacpans_myan.png') !important; 
+            background-size: cover !important; /* Cover the entire background */
+            background-position: center !important; /* Center the image */
+            background-repeat: no-repeat !important; /* Do not repeat the image */
+            background-attachment: fixed !important; /* Keep background fixed when scrolling, if content was longer */
+            /* Add a dark fallback color in case the image still fails */
+            background-color: #1f2937 !important; 
         }
     </style>
     <script>
@@ -128,4 +131,3 @@
     </script>
 </body>
 </html>
-
